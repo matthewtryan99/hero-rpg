@@ -5,6 +5,7 @@
 # 1. fight goblin
 # 2. do nothing - in which case the goblin will attack him anyway
 # 3. flee
+import random
 
 class Character:
     def __init__(self, health, power):
@@ -20,8 +21,13 @@ class Character:
 
 class Hero(Character):
     def attack(self, goblin):
-        goblin.health -= self.power
-        print("You do {} damage to the goblin.".format(self.power))
+        randomNum = random.randrange(10)
+        if randomNum < 2:
+            goblin.health -= self.power
+            print(f"You do {self.power * 2} damage to the goblin.")
+        else:
+            goblin.health -= self.power
+            print(f"You do {self.power} damage to the goblin.")
         if goblin.health <= 0:
             print("The goblin is dead.")
 

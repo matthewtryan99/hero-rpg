@@ -8,7 +8,8 @@
 import random
 
 class Character:
-    def __init__(self, health, power):
+    def __init__(self, name, health, power):
+        self.name = name
         self.health = health
         self.power = power
     
@@ -23,13 +24,13 @@ class Hero(Character):
     def attack(self, goblin):
         randomNum = random.randrange(10)
         if randomNum < 2:
-            goblin.health -= self.power
-            print(f"You do {self.power * 2} damage to the goblin.")
+            goblin.health -= self.power * 2
+            print(f"You do {self.power * 2} damage to the {goblin.name}.")
         else:
             goblin.health -= self.power
-            print(f"You do {self.power} damage to the goblin.")
+            print(f"You do {self.power} damage to the {goblin.name}.")
         if goblin.health <= 0:
-            print("The goblin is dead.")
+            print(f"The {goblin.name} is dead.")
 
 
     def print_status(self):
@@ -39,16 +40,23 @@ class Hero(Character):
 class Goblin(Character):
     def attack(self, hero):
         hero.health -= self.power
-        print("The goblin does {} damage to you.".format(self.power))
+        print(f"The {self.name} does {self.power} damage to you.")
         if hero.health <= 0:
             print("You are dead.")
     def print_status(self):
-        print(f"The goblin has {self.health} health and {self.power} power.")
+        print(f"The {self.name} has {self.health} health and {self.power} power.")
+
+class Medic(Goblin):
+    def heal(self):
+        randomNum = random.randrange(10)
+        if randomNum < 2:
+            self.health += 2
 
 
 def main():
-    hero = Hero(10, 5)
-    goblin = Goblin(6, 2)
+    hero = Hero('hero',10, 5)
+    goblin = Goblin('goblin', 6, 2)
+    medic = Medic('medic', 6, 1)
 
     while goblin.alive() and hero.alive():
         goblin.print_status()
@@ -72,6 +80,31 @@ def main():
             print("Invalid input {}".format(raw_input))
 
         if goblin.alive():
+            # Goblin attacks hero
+            goblin.attack(hero)
+
+    while medic.alive() and hero.alive():
+        medic.print_status()
+        hero.print_status()
+        print()
+        print("What do you want to do?")
+        print("1. fight medic")
+        print("2. do nothing")
+        print("3. flee")
+        print("> ", end=' ')
+        raw_input = input()
+        if raw_input == "1":
+            # Hero attacks goblin
+            hero.attack(medic)
+        elif raw_input == "2":
+            pass
+        elif raw_input == "3":
+            print("Goodbye.")
+            break
+        else:
+            print("Invalid input {}".format(raw_input))
+
+        if medic.alive():
             # Goblin attacks hero
             goblin.attack(hero)
 

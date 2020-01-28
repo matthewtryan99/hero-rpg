@@ -8,12 +8,13 @@
 import random
 
 class Character:
-    def __init__(self, name, health, power, coins, armor):
+    def __init__(self, name, health, power, coins, armor, evade):
         self.name = name
         self.health = health
         self.power = power
         self.coins = coins
         self.armor = armor
+        self.evade = evade
     
     def alive(self):
         alive = True
@@ -52,8 +53,12 @@ class Hero(Character):
 
 class Enemy(Character):
     def attack(self, hero):
-        hero.health -= (self.power - hero.armor)
-        print(f"The {self.name} does {self.power} damage to you.")
+        randomNum = random.randrange(40)
+        if randomNum < hero.evade + 2 and hero.evade != 0:
+            print("You avoided the attack")
+        else:
+            hero.health -= (self.power - hero.armor)
+            print(f"The {self.name} does {self.power} damage to you.")
         if hero.health <= 0:
             print("You are dead.")
     def print_status(self):
@@ -84,6 +89,17 @@ class Armor():
         hero.armor += 2
         print(f"Your armor is now {hero.armor}")
 
+class Evade():
+    def __init__(self, cost):
+        self.cost = cost
+        self.name = 'Evade'
+    
+    def bought(self, hero):
+        if hero.evade < 38:
+            hero.evade += 2
+        else:
+            print("You cannot get your evade attribute higher")
+            hero.coins += self.cost
 
 class Store(object):
 
@@ -94,8 +110,9 @@ class Store(object):
     # Store.items => [Tonic, Sword]
     tonic = Tonic(3)
     armor = Armor(3)
+    evade = Evade(5)
 
-    items = [tonic, armor]
+    items = [tonic, armor, evade]
 
     def do_shopping(self, hero):
 
@@ -135,11 +152,11 @@ class Store(object):
 
 
 def main():
-    hero = Hero('hero',10, 5, 0, 0)
-    goblin = Enemy('goblin', 6, 2, 5, 0)
-    medic = Enemy('medic', 6, 1, 3, 0)
-    zombie = Enemy('zombie', 4, 1, 10, 0)
-    shadow = Enemy('shadow', 1, 1, 15, 0)
+    hero = Hero('hero',10, 5, 0, 0, 0)
+    goblin = Enemy('goblin', 6, 2, 5, 0, 0)
+    medic = Enemy('medic', 6, 1, 3, 0, 0)
+    zombie = Enemy('zombie', 4, 1, 10, 0, 0)
+    shadow = Enemy('shadow', 1, 1, 15, 0, 0)
     store = Store()
 
     def fighting(hero, enemy):
